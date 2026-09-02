@@ -10,10 +10,21 @@
   /* ----------------------------------------------------------
      API SETUP
      The site is served by the Express backend, so "" (same
-     origin) works. If you host index.html somewhere else and
-     the API elsewhere, change this to the API's base URL.
+     origin) is used when running locally / on the same origin
+     as the API. When this static frontend is hosted somewhere
+     else (GitHub Pages, Netlify, a separate Vercel project),
+     requests are sent to the deployed backend below.
+
+     To change the backend, update API_BASE_URL in ONE place.
   ---------------------------------------------------------- */
-  const API_BASE = '';
+  const API_BASE_URL = 'https://saba-mern-portfolio-backend.vercel.app';
+
+  // Local development: the Express server hosts both the site and
+  // the API on localhost, so keep requests same-origin ("").
+  const isLocalHost = /^localhost(:\d+)?$/.test(window.location.hostname);
+
+  // "" (same origin) locally, absolute URL when hosted separately.
+  const API_BASE = isLocalHost ? '' : API_BASE_URL;
 
   /* ----------------------------------------------------------
      FALLBACK DEMO DATA

@@ -8,7 +8,24 @@
 (function () {
   'use strict';
 
-  const API_BASE = '';
+  /* ----------------------------------------------------------
+     API SETUP
+     By default the admin dashboard is served by the same Express
+     backend that provides the API ("" = same origin). When this
+     static frontend is hosted separately (GitHub Pages, Netlify,
+     a different Vercel project), requests are sent to the deployed
+     backend URL below.
+
+     To change the backend, update API_BASE_URL in ONE place.
+  ---------------------------------------------------------- */
+  const API_BASE_URL = 'https://saba-mern-portfolio-backend.vercel.app';
+
+  // Local development: the Express server hosts both the admin site
+  // and the API on localhost, so keep requests same-origin.
+  const isLocalHost = /^localhost(:\d+)?$/.test(window.location.hostname);
+
+  const API_BASE = isLocalHost ? '' : API_BASE_URL;
+
   const TOKEN_KEY = 'saba_portfolio_token';
 
   /* ----------------------------------------------------------
