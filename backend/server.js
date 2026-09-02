@@ -36,6 +36,53 @@ app.use(cors());
 // Parse JSON request bodies (used by the admin dashboard API calls)
 app.use(express.json());
 
+/* ----------------------------------------------------------
+   LAZY INITIALIZATION (MUST run BEFORE the API routes below)
+   On a cold start the first request triggers DB connect +
+   seeding.  On subsequent warm invocations the middleware
+   short-circuits immediately.
+
+   IMPORTANT: this `app.use(...)` is registered here, ABOVE the
+   /api routes, so every API request awaits a LIVE MongoDB
+   connection before reaching a controller.  If it were mounted
+   after the routes, a query like `projects.find()` would run
+   before Mongo is ready and Mongoose would throw
+   "buffering timed out after 10000ms" (exactly the Vercel error).
+---------------------------------------------------------- */
+// A shared Promise so concurrent cold-start requests don't each run
+// the init (DB connect + seeding) separately. Once it resolves, all
+// subsequent requests pass straight through.
+let initPromise = null;
+
+const initApp = async () => {
+  // Wait for a live MongoDB connection BEFORE any model query runs.
+  // Mongoose has `bufferCommands: false`, so a model call without a
+  // ready connection would throw immediately — this await prevents that.
+  await connectDB();
+  await ensureAdmin();
+  await ensureAbout();
+};
+
+app.use(async (req, res, next) => {
+  try {
+    // Reuse a single init promise across concurrent cold starts.
+    if (!initPromise) {
+      initPromise = initApp().catch((err) => {
+        // Reset so the next request can retry if this one failed.
+        initPromise = null;
+        throw err;
+      });
+    }
+    await initPromise;
+    next();
+  } catch (err) {
+    console.error('❌ Initialization failed:', err.message);
+    res.status(500).json({
+      message: 'Server could not start. Please check that all environment variables are configured correctly in the Vercel dashboard.'
+    });
+  }
+});
+
 // Serve the uploaded project images
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
@@ -102,31 +149,6 @@ async function ensureAbout() {
 }
 
 /* ----------------------------------------------------------
-   LAZY INITIALIZATION (Vercel / serverless)
-   On a cold start the first request triggers DB connect +
-   seeding.  On subsequent warm invocations the middleware
-   short-circuits immediately.
----------------------------------------------------------- */
-let initialized = false;
-
-app.use(async (req, res, next) => {
-  if (initialized) return next();
-
-  try {
-    await connectDB();
-    await ensureAdmin();
-    await ensureAbout();
-    initialized = true;
-    next();
-  } catch (err) {
-    console.error('❌ Initialization failed:', err.message);
-    res.status(500).json({
-      message: 'Server could not start. Please check that all environment variables are configured correctly in the Vercel dashboard.'
-    });
-  }
-});
-
-/* ----------------------------------------------------------
    START THE SERVER (local development only)
 ---------------------------------------------------------- */
 const PORT = process.env.PORT || 5000;
@@ -152,7 +174,6 @@ async function start() {
   await connectDB();
   await ensureAdmin();
   await ensureAbout();
-  initialized = true;
 
   // The contact form still works without these, so warn instead of crashing
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
