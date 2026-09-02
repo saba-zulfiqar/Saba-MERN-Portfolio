@@ -51,9 +51,37 @@
     };
   }
 
-  // Generic fetch wrapper that throws an Error with a readable message
+  // Generic fetch wrapper that throws an Error with a readable message.
+  // Timeout via AbortController so a hung request (slow serverless cold
+  // start, long Cloudinary upload, dead network) REJECTS instead of
+  // staying pending forever — which is what kept the Save button disabled.
   async function apiRequest(url, options) {
-    const res = await fetch(url, options);
+    options = options || {};
+
+    let controller = null;
+    let timeoutId = null;
+    if (typeof AbortController === 'function') {
+      controller = new AbortController();
+      options = Object.assign({}, options, { signal: controller.signal });
+      // 60s cap. Multipart/Cloudinary uploads can be slow, so give it room,
+      // but never let the request hang indefinitely.
+      timeoutId = setTimeout(() => {
+        if (controller) controller.abort();
+      }, 60000);
+    }
+
+    let res;
+    try {
+      res = await fetch(url, options);
+    } catch (e) {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (e && e.name === 'AbortError') {
+        throw new Error('Request timed out — the server did not respond in time. Please try again.');
+      }
+      throw new Error('Network error — could not reach the server. Check your connection.');
+    }
+    if (timeoutId) clearTimeout(timeoutId);
+
     let data = null;
     try {
       data = await res.json();
@@ -226,7 +254,12 @@
     else formData.append('image', imageUrl);
 
     const saveBtn = document.getElementById('project-save-btn');
+    // Keep a handle to the label <span> so we can update text while
+    // preserving the save icon next to it.
+    const saveBtnLabel = saveBtn.querySelector('span');
+    const originalLabel = saveBtnLabel ? saveBtnLabel.textContent : 'Save Project';
     saveBtn.disabled = true;
+    if (saveBtnLabel) saveBtnLabel.textContent = editingProjectId ? 'Saving...' : 'Adding...';
 
     try {
       if (editingProjectId) {
@@ -247,9 +280,14 @@
       resetProjectForm();
       await loadProjects();
     } catch (err) {
-      setGlobalMsg(err.message, 'error');
+      // Always log + show WHY the save failed so it is never silent.
+      console.error('Save project failed:', err);
+      setGlobalMsg('Save failed: ' + (err.message || 'unknown error'), 'error');
     } finally {
+      // Guaranteed to run whether the request succeeded, threw, or hung
+      // (the apiRequest timeout makes sure a hung request eventually throws).
       saveBtn.disabled = false;
+      if (saveBtnLabel) saveBtnLabel.textContent = originalLabel;
     }
   });
 
