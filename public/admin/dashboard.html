@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Dashboard | Saba Zulfiqar</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="dash-body">
+
+  <!-- ============================================================
+       TOP BAR
+  ============================================================ -->
+  <header class="dash-header">
+    <div class="dash-header-inner">
+      <div class="dash-brand"><i class="fas fa-user-astronaut"></i> Saba Zulfiqar Admin</div>
+      <div class="dash-actions">
+        <span class="welcome" id="welcome-text">Welcome</span>
+        <a href="/" class="btn btn-ghost btn-sm" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> View Site</a>
+        <button class="btn btn-danger btn-sm" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global status message bar -->
+  <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px">
+    <div class="alert hidden" id="global-msg"></div>
+  </div>
+
+  <!-- ============================================================
+       LAYOUT: SIDEBAR TABS + CONTENT PANELS
+  ============================================================ -->
+  <div class="dash-layout">
+
+    <!-- Sidebar tabs -->
+    <nav class="dash-tabs" id="dash-tabs">
+      <button class="tab-btn active" data-panel="projects"><i class="fas fa-folder-open"></i> Projects</button>
+      <button class="tab-btn" data-panel="about"><i class="fas fa-user"></i> About</button>
+      <button class="tab-btn" data-panel="skills"><i class="fas fa-chart-bar"></i> Skills</button>
+    </nav>
+
+    <!-- ==========================================================
+         PROJECTS PANEL
+    =========================================================== -->
+    <main class="tab-panel" id="panel-projects">
+
+      <div class="panel-header">
+        <div>
+          <h2>Projects</h2>
+          <p>Add, edit, or remove the projects shown on your website.</p>
+        </div>
+      </div>
+
+      <!-- Add / edit project form -->
+      <div class="card">
+        <div class="edit-toolbar" id="project-statusbar">
+          <h3><i class="fas fa-plus-circle" style="color: var(--primary)"></i>&nbsp; <span id="project-form-title">Add New Project</span></h3>
+          <span class="status hidden" id="editing-project-badge">Editing existing project</span>
+        </div>
+
+        <form id="project-form">
+          <div class="form-grid">
+            <div class="form-field full">
+              <label for="p-title">Project title <span class="req">*</span></label>
+              <input type="text" id="p-title" name="title" required>
+            </div>
+
+            <div class="form-field full">
+              <label for="p-desc">Description <span class="req">*</span></label>
+              <textarea id="p-desc" name="description" rows="3" required></textarea>
+            </div>
+
+            <div class="form-field">
+              <label for="p-image-url">Image URL (optional)</label>
+              <input type="url" id="p-image-url" name="image" placeholder="https://example.com/image.jpg">
+              <p class="hint">Or upload an image below. If both are empty, a placeholder is used.</p>
+            </div>
+
+            <div class="form-field">
+              <label for="p-image-file">…or upload an image</label>
+              <input type="file" id="p-image-file" name="image-file" accept="image/*">
+            </div>
+
+            <div class="form-field">
+              <label for="p-tech">Technologies (comma separated)</label>
+              <input type="text" id="p-tech" name="techStack" placeholder="React.js, Node.js, MongoDB">
+            </div>
+
+            <div class="form-field">
+              <label for="p-live">Live demo link</label>
+              <input type="url" id="p-live" name="liveLink" placeholder="https://myproject.com">
+            </div>
+
+            <div class="form-field full">
+              <label for="p-github">GitHub repository link</label>
+              <input type="url" id="p-github" name="githubLink" placeholder="https://github.com/saba-zulfiqar/myproject">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="project-save-btn"><i class="fas fa-save"></i> <span>Save Project</span></button>
+            <button type="button" class="btn btn-ghost hidden" id="project-cancel-btn"><i class="fas fa-times"></i> Cancel Edit</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Existing projects list -->
+      <div class="card">
+        <div class="list-header-row">
+          <h3>Existing Projects</h3>
+        </div>
+        <div id="projects-list">
+          <div class="empty-note">Loading projects...</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ==========================================================
+         ABOUT PANEL
+    =========================================================== -->
+    <main class="tab-panel hidden" id="panel-about">
+      <div class="panel-header">
+        <div>
+          <h2>About &amp; Contact</h2>
+          <p>Edit the bio and contact details shown on your website.</p>
+        </div>
+      </div>
+
+      <form id="about-form" class="card">
+        <h3><i class="fas fa-user-edit" style="color: var(--primary)"></i>&nbsp; About Section</h3>
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="a-greeting">Greeting</label>
+            <input type="text" id="a-greeting" name="greeting" placeholder="Hi, I'm">
+          </div>
+
+          <div class="form-field">
+            <label for="a-name">Full name</label>
+            <input type="text" id="a-name" name="name">
+          </div>
+
+          <div class="form-field full">
+            <label for="a-headline">Typing headline (separate phrases with " | ")</label>
+            <input type="text" id="a-headline" name="headline"
+              placeholder="MERN Stack Developer | Building Modern Web Applications | React.js Enthusiast">
+          </div>
+
+          <div class="form-field full">
+            <label for="a-description">Hero description</label>
+            <textarea id="a-description" name="description" rows="2"></textarea>
+          </div>
+
+          <div class="form-field full">
+            <label for="a-bio-title">Bio title</label>
+            <input type="text" id="a-bio-title" name="bioTitle" placeholder="A curious mind, a builder's heart.">
+          </div>
+
+          <div class="form-field full">
+            <label for="a-bio">Bio paragraphs (separate paragraphs with a blank line)</label>
+            <textarea id="a-bio" name="bioParagraphs" rows="6"
+              placeholder="First paragraph about you.&#10;&#10;Second paragraph about your journey.&#10;&#10;Third paragraph, and so on."></textarea>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 22px"><i class="fas fa-address-card" style="color: var(--primary)"></i>&nbsp; Contact Details</h3>
+
+        <div class="form-grid" style="margin-top: 14px">
+          <div class="form-field">
+            <label for="c-email">Email</label>
+            <input type="email" id="c-email" name="email">
+          </div>
+          <div class="form-field">
+            <label for="c-phone">Phone</label>
+            <input type="text" id="c-phone" name="phone">
+          </div>
+          <div class="form-field">
+            <label for="c-github">GitHub URL</label>
+            <input type="url" id="c-github" name="github" placeholder="https://github.com/...">
+          </div>
+          <div class="form-field">
+            <label for="c-linkedin">LinkedIn URL</label>
+            <input type="url" id="c-linkedin" name="linkedin" placeholder="https://linkedin.com/in/...">
+          </div>
+          <div class="form-field">
+            <label for="c-location">Location</label>
+            <input type="text" id="c-location" name="location" placeholder="Pakistan">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save About Info</button>
+        </div>
+      </form>
+    </main>
+
+    <!-- ==========================================================
+         SKILLS PANEL
+    =========================================================== -->
+    <main class="tab-panel hidden" id="panel-skills">
+      <div class="panel-header">
+        <div>
+          <h2>Skills</h2>
+          <p>Add, edit, or remove the skills and their progress bars.</p>
+        </div>
+      </div>
+
+      <!-- Add / edit skill form -->
+      <form id="skill-form" class="card">
+        <div class="edit-toolbar">
+          <h3><i class="fas fa-plus-circle" style="color: var(--primary)"></i>&nbsp; <span id="skill-form-title">Add New Skill</span></h3>
+          <span class="status hidden" id="editing-skill-badge">Editing existing skill</span>
+        </div>
+
+        <div class="form-grid" style="margin-top: 14px">
+          <div class="form-field">
+            <label for="s-name">Skill name <span class="req">*</span></label>
+            <input type="text" id="s-name" name="name" placeholder="React.js" required>
+          </div>
+
+          <div class="form-field">
+            <label for="s-percent">Proficiency (%) <span class="req">*</span></label>
+            <input type="number" id="s-percent" name="percent" min="1" max="100" placeholder="80" required>
+          </div>
+
+          <div class="form-field full">
+            <label for="s-icon">Font Awesome icon class</label>
+            <input type="text" id="s-icon" name="icon" placeholder="fa-brands fa-react">
+            <p class="hint">
+              Examples: <code>fa-brands fa-html5</code>, <code>fa-solid fa-database</code>,
+              <code>fa-brands fa-git-alt</code>, <code>fa-brands fa-node-js</code>
+            </p>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="skill-save-btn"><i class="fas fa-save"></i> <span>Save Skill</span></button>
+          <button type="button" class="btn btn-ghost hidden" id="skill-cancel-btn"><i class="fas fa-times"></i> Cancel Edit</button>
+        </div>
+      </form>
+
+      <!-- Existing skills list -->
+      <div class="card">
+        <div class="list-header-row">
+          <h3>Existing Skills</h3>
+        </div>
+        <div id="skills-list">
+          <div class="empty-note">Loading skills...</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

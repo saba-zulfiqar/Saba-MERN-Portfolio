@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portfolio of Saba Zulfiqar - MERN Stack Developer building modern web applications.">
+  <title>Saba Zulfiqar | MERN Stack Developer</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       1. HEADER / NAVBAR
+  ============================================================ -->
+  <header class="navbar" id="navbar">
+    <nav class="nav-container">
+      <a href="#home" class="logo" id="logo-name">Saba<span>&nbsp;</span></a>
+
+      <ul class="nav-menu" id="nav-menu">
+        <li class="nav-item"><a href="#home" class="nav-link active">Home</a></li>
+        <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
+        <li class="nav-item"><a href="#skills" class="nav-link">Skills</a></li>
+        <li class="nav-item"><a href="#projects" class="nav-link">Projects</a></li>
+        <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+
+      <!-- Mobile hamburger menu -->
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ============================================================
+         2. HERO SECTION  (text filled dynamically from the backend)
+    ============================================================ -->
+    <section class="hero" id="home">
+      <div class="hero-content">
+        <p class="hero-greeting fade-up" id="hero-greeting" style="--delay: 0s">Hi, I'm</p>
+        <h1 class="hero-name fade-up" id="hero-name" style="--delay: 0.15s">Saba Zulfiqar</h1>
+        <div class="hero-tagline fade-up" style="--delay: 0.3s">
+          <span class="typing-text" id="typing-text"></span><span class="cursor">&nbsp;</span>
+        </div>
+        <p class="hero-description fade-up" id="hero-description" style="--delay: 0.45s"></p>
+
+        <div class="hero-buttons fade-up" style="--delay: 0.6s">
+          <a href="#projects" class="btn btn-primary">View My Work</a>
+          <a href="#contact" class="btn btn-outline">Contact Me</a>
+        </div>
+
+        <!-- Social links are rendered dynamically from the backend -->
+        <div class="hero-socials fade-up" id="hero-socials" style="--delay: 0.75s"></div>
+      </div>
+
+      <!-- Scroll hint -->
+      <a href="#about" class="scroll-hint" aria-label="Scroll down">
+        <span class="mouse"><span class="wheel"></span></span>
+      </a>
+    </section>
+
+    <!-- ============================================================
+         3. ABOUT SECTION  (bio text filled dynamically from backend)
+    ============================================================ -->
+    <section class="section about" id="about">
+      <div class="section-container">
+        <h2 class="section-title reveal">About <span>Me</span></h2>
+        <div class="about-grid">
+          <div class="about-card reveal" style="--delay: 0.1s">
+            <div class="about-avatar">
+              <i class="fas fa-user-astronaut"></i>
+            </div>
+          </div>
+          <div class="about-text reveal" style="--delay: 0.2s">
+            <h3 id="bio-title"></h3>
+            <!-- Paragraphs get injected here by script.js -->
+            <div id="bio-paragraphs"></div>
+            <div class="about-info" id="about-info"></div>
+            <a href="#contact" class="btn btn-primary">Let's Talk</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         4. SKILLS SECTION  (cards built dynamically from backend)
+    ============================================================ -->
+    <section class="section skills" id="skills">
+      <div class="section-container">
+        <h2 class="section-title reveal">My <span>Skills</span></h2>
+        <p class="section-subtitle reveal" style="--delay: 0.1s">
+          The technologies I use to bring ideas to life.
+        </p>
+
+        <div class="skills-grid" id="skills-list">
+          <!-- Loading spinner shown until data arrives from /api/skills -->
+          <div class="loading-message">
+            <div class="spinner"></div>
+            <p>Loading skills...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         5. PROJECTS SECTION  (cards built dynamically from backend)
+    ============================================================ -->
+    <section class="section projects" id="projects">
+      <div class="section-container">
+        <h2 class="section-title reveal">Featured <span>Projects</span></h2>
+        <p class="section-subtitle reveal" style="--delay: 0.1s">
+          A selection of things I've built — managed through my admin dashboard.
+        </p>
+
+        <div class="projects-grid" id="projects-list">
+          <!-- Loading spinner shown until data arrives from /api/projects -->
+          <div class="loading-message">
+            <div class="spinner"></div>
+            <p>Loading projects...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         6. CONTACT SECTION  (info filled dynamically from backend)
+    ============================================================ -->
+    <section class="section contact" id="contact">
+      <div class="section-container">
+        <h2 class="section-title reveal">Get In <span>Touch</span></h2>
+        <p class="section-subtitle reveal" style="--delay: 0.1s">
+          Have a project in mind, or just want to say hi? My inbox is open.
+        </p>
+
+        <div class="contact-grid">
+          <!-- Contact details are rendered dynamically from the backend -->
+          <div class="contact-info reveal" id="contact-details" style="--delay: 0.2s">
+            <div class="loading-message">
+              <div class="spinner"></div>
+              <p>Loading contact info...</p>
+            </div>
+          </div>
+
+          <!-- Contact Form -->
+          <form class="contact-form reveal" id="contact-form" style="--delay: 0.3s" novalidate>
+            <div class="form-group">
+              <input type="text" id="name" name="name" class="form-input" placeholder=" " autocomplete="name" required>
+              <label for="name" class="form-label">Your Name</label>
+            </div>
+            <div class="form-group">
+              <input type="email" id="email" name="email" class="form-input" placeholder=" " autocomplete="email" required>
+              <label for="email" class="form-label">Your Email</label>
+            </div>
+            <div class="form-group">
+              <textarea id="message" name="message" class="form-input" rows="5" placeholder=" " required></textarea>
+              <label for="message" class="form-label">Your Message</label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-submit">
+              <span>Send Message</span>
+              <i class="fas fa-paper-plane"></i>
+            </button>
+            <p class="form-status" id="form-status"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       7. FOOTER  (social links + name filled dynamically)
+  ============================================================ -->
+  <footer class="footer">
+    <div class="footer-socials" id="footer-socials"></div>
+    <p class="footer-text">&copy; <span id="year"></span> <span id="footer-name">Saba Zulfiqar</span>. All rights reserved.</p>
+    <p class="footer-made">Built with <i class="fas fa-heart"></i> using the MERN stack</p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>

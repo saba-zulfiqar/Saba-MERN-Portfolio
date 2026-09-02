@@ -1,0 +1,49 @@
+# ============================================================
+# .gitignore — protects secrets & keeps the repo clean
+# (Node.js + Express + MongoDB portfolio)
+# ============================================================
+
+# --- Dependencies (matches at any depth, incl. backend/node_modules) ---
+node_modules/
+
+# --- Environment / SECRETS — NEVER commit these! ---
+# Matches `.env` and `backend/.env` (patterns without a leading
+# slash apply at every folder level). Also matches `.env.production`,
+# `.env.local`, etc. The example file is NOT ignored, so it can be
+# committed safely as documentation.
+.env
+.env.*
+!.env.example
+
+# --- Editor / OS files ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.swp
+*.swo
+
+# --- Logs ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# --- Build output & caches ---
+dist/
+build/
+coverage/
+.cache/
+*.tsbuildinfo
+
+# --- App-specific ---
+# Uploaded portfolio images (multer writes here at runtime)
+uploads/
+
+# --- Misc sensitive / machine-specific ---
+.npmrc
+.envrc
+
+# --- Keep lockfiles tracked! package-lock.json should be committed ---
