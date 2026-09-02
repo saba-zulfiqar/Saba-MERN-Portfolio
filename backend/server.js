@@ -102,7 +102,32 @@ async function ensureAbout() {
 }
 
 /* ----------------------------------------------------------
-   START THE SERVER
+   LAZY INITIALIZATION (Vercel / serverless)
+   On a cold start the first request triggers DB connect +
+   seeding.  On subsequent warm invocations the middleware
+   short-circuits immediately.
+---------------------------------------------------------- */
+let initialized = false;
+
+app.use(async (req, res, next) => {
+  if (initialized) return next();
+
+  try {
+    await connectDB();
+    await ensureAdmin();
+    await ensureAbout();
+    initialized = true;
+    next();
+  } catch (err) {
+    console.error('❌ Initialization failed:', err.message);
+    res.status(500).json({
+      message: 'Server could not start. Please check that all environment variables are configured correctly in the Vercel dashboard.'
+    });
+  }
+});
+
+/* ----------------------------------------------------------
+   START THE SERVER (local development only)
 ---------------------------------------------------------- */
 const PORT = process.env.PORT || 5000;
 
@@ -127,6 +152,7 @@ async function start() {
   await connectDB();
   await ensureAdmin();
   await ensureAbout();
+  initialized = true;
 
   // The contact form still works without these, so warn instead of crashing
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
@@ -142,7 +168,7 @@ async function start() {
 }
 
 // Only auto-start when this file is run directly (node server.js).
-// When required by a test, `app` is exported instead.
+// When required by a test or Vercel's api/index.js, `app` is exported.
 if (require.main === module) {
   start();
 }

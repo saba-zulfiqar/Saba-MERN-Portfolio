@@ -28,6 +28,15 @@ exports.getProjects = async (req, res) => {
 // POST a new project (admin)
 exports.createProject = async (req, res) => {
   try {
+    // Vercel's filesystem is read-only — disk uploads can't persist.
+    // The admin dashboard has an "Image URL" field; users should paste
+    // a public URL (imgur, Cloudinary, etc.) instead.
+    if (req.file && process.env.VERCEL) {
+      return res.status(400).json({
+        message: 'File uploads are not supported on Vercel. Please use an image URL instead.'
+      });
+    }
+
     // Prefer an uploaded file; otherwise use the image URL passed in the form
     const image = req.file
       ? '/uploads/' + req.file.filename
@@ -51,6 +60,13 @@ exports.createProject = async (req, res) => {
 // PUT — update an existing project (admin)
 exports.updateProject = async (req, res) => {
   try {
+    // Vercel: reject disk file uploads — use image URL instead
+    if (req.file && process.env.VERCEL) {
+      return res.status(400).json({
+        message: 'File uploads are not supported on Vercel. Please use an image URL instead.'
+      });
+    }
+
     // Keep the existing image unless a new one was uploaded or a URL given
     const existing = await Project.findById(req.params.id);
     if (!existing) return res.status(404).json({ message: 'Project not found.' });
