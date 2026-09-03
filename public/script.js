@@ -138,13 +138,9 @@
     document.getElementById('hero-name').textContent = about.name || 'Saba Zulfiqar';
     document.getElementById('hero-description').textContent = about.description || '';
 
-    // Navbar logo: "Saba Zulfiqar" with the last word highlighted
-    const name = about.name || 'Saba Zulfiqar';
-    const parts = name.trim().split(/\s+/);
-    const first = parts[0] || '';
-    const rest = parts.slice(1).join(' ');
-    document.getElementById('logo-name').innerHTML =
-      first + '<span>' + (rest ? ' ' + rest : '') + '</span>';
+    // Note: the navbar logo is now a static <img> (images/logo.png) that
+    // already contains the "Saba Zulfiqar" text, so it is no longer
+    // rebuilt from the about data here.
 
     // About: title + paragraphs
     document.getElementById('bio-title').textContent = about.bioTitle || '';
