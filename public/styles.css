@@ -255,43 +255,6 @@ button {
   color: var(--primary);
 }
 
-/* ----------------------------------------------------------
-   NAVBAR LOGO IMAGE
-   The brand image (circular SZ monogram + "Saba Zulfiqar" text).
-   Sized to sit comfortably inside the --nav-height bar, vertically
-   centered via the navbar's flex alignment, with a subtle hover
-   effect that matches the site's interactive transitions.
----------------------------------------------------------- */
-.navbar-logo {
-  height: 46px;               /* sits nicely inside the 74px navbar */
-  width: auto;                /* keep aspect ratio of the PNG */
-  display: block;
-  line-height: 1;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  cursor: pointer;
-}
-
-.navbar-logo:hover {
-  transform: scale(1.06);     /* gentle scale-up on hover */
-  opacity: 0.92;
-}
-
-/* The scrolled navbar is a bit shorter (64px) — keep the logo
-   proportionally smaller so it stays vertically comfortable. */
-.navbar.scrolled .navbar-logo {
-  height: 42px;
-}
-
-/* Mobile: slightly smaller logo so it never overflows. */
-@media (max-width: 768px) {
-  .navbar-logo {
-    height: 40px;
-  }
-  .navbar.scrolled .navbar-logo {
-    height: 38px;
-  }
-}
-
 .nav-menu {
   display: flex;
   gap: 2.2rem;
